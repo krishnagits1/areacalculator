@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Land Area Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #2563eb, #9333ea);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      max-width: 450px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      color: #2563eb;
+    }
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .controls button {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .controls button:hover {
+      opacity: 0.9;
+    }
+    .save {
+      background: #2563eb;
+      color: #fff;
+    }
+    .clear {
+      background: #9333ea;
+      color: #fff;
+    }
+    .lang {
+      background: #16a34a;
+      color: #fff;
+    }
+    .results div {
+      padding: 10px;
+      margin: 5px 0;
+      background: #f3f4f6;
+      border-radius: 8px;
+    }
+
+    /* Mobile friendly */
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      label, input, button {
+        font-size: 14px;
+      }
+    }
+
+    /* Print styling for saving PDF with colors and fit to A4 */
+    @media print {
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+      body {
+        background: linear-gradient(135deg, #2563eb, #9333ea) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .container {
+        max-width: 100%;
+        width: 100%;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+      .controls {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Land Area Converter</h1>
+    <label id="label" for="hectare">Enter Area (Hectare):</label>
+    <input type="number" id="hectare" placeholder="Enter hectares" oninput="convert()">
+    <div class="controls">
+      <button class="save" onclick="window.print()" id="save">Save as PDF</button>
+      <button class="clear" onclick="clearAll()" id="clear">Clear</button>
+      <button class="lang" onclick="toggleLang()" id="lang">हिन्दी</button>
+    </div>
+    <div class="results" id="results"></div>
+  </div>
+
+  <script>
+    const translations = {
+      en: {
+        title: "Land Area Converter",
+        label: "Enter Area (Hectare):",
+        save: "Save as PDF",
+        clear: "Clear",
+        lang: "हिन्दी",
+        units: {
+          Acre: "Acre",
+          Bigha: "Bigha",
+          Kattha: "Kattha",
+          Dismil: "Dismil",
+          Sqft: "Square Feet",
+          Dhur: "Dhur"
+        }
+      },
+      hi: {
+        title: "भूमि क्षेत्र परिवर्तक",
+        label: "क्षेत्र दर्ज करें (हेक्टेयर):",
+        save: "पीडीएफ में सहेजें",
+        clear: "साफ करें",
+        lang: "English",
+        units: {
+          Acre: "एकड़",
+          Bigha: "बीघा",
+          Kattha: "कट्ठा",
+          Dismil: "डिसमिल",
+          Sqft: "वर्ग फीट",
+          Dhur: "धुर"
+        }
+      }
+    };
+
+    let currentLang = 'en';
+
+    function toggleLang() {
+      currentLang = currentLang === 'en' ? 'hi' : 'en';
+      document.getElementById('title').innerText = translations[currentLang].title;
+      document.getElementById('label').innerText = translations[currentLang].label;
+      document.getElementById('save').innerText = translations[currentLang].save;
+      document.getElementById('clear').innerText = translations[currentLang].clear;
+      document.getElementById('lang').innerText = translations[currentLang].lang;
+      convert();
+    }
+
+    function convert() {
+      let h = parseFloat(document.getElementById('hectare').value);
+      let res = document.getElementById('results');
+      res.innerHTML = "";
+      if (!isNaN(h)) {
+        let units = translations[currentLang].units;
+        res.innerHTML += `<div>${units.Acre}: ${(h * 2.471052).toFixed(4)}</div>`;
+        res.innerHTML += `<div>${units.Bigha}: ${(h * 3.986635).toFixed(4)}</div>`;
+        res.innerHTML += `<div>${units.Kattha}: ${(h * 79.088245).toFixed(4)}</div>`;
+        res.innerHTML += `<div>${units.Dismil}: ${(h * 247.128075).toFixed(4)}</div>`;
+        res.innerHTML += `<div>${units.Sqft}: ${(h * 106739.1505).toFixed(4)}</div>`;
+        res.innerHTML += `<div>${units.Dhur}: ${(h * 29899.7524).toFixed(4)}</div>`;
+      }
+    }
+
+    function clearAll() {
+      document.getElementById('hectare').value = '';
+      document.getElementById('results').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
